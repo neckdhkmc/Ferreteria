@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API_Administracion.CAPA_DATOS;
+using API_Administracion.CLASES;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +16,38 @@ namespace API_Administracion.Controllers
         #region provedores
         [HttpPost("RegistrarProvedor")]
 
-        public bool RegistrarProvedor()
+        public ResponseGeneral RegistrarProvedor(Datosprovedor datos)
         {
-            var respuesta = false;
+           
 
-            return respuesta;
+            //_logger.LogInformation("Metodo RegistroUsuario inicio");
+
+            ResponseGeneral respuesta = new ResponseGeneral();
+            try
+            {
+                Persistencia objpersistence = new Persistencia();
+
+                var responseRegUsur = objpersistence.regitroProvedor(datos);
+                if (responseRegUsur)
+                {
+                    respuesta.codigo = 0;
+                    respuesta.Mensaje = "Provedor registrado exitosamente";
+                }
+                else
+                {
+                    respuesta.codigo = 1;
+                    respuesta.Mensaje = "Error al registrar provedor";
+                }
+
+            }
+            catch (Exception e)
+            {
+
+                respuesta.codigo = 1;
+                respuesta.Mensaje = "Error al registrar Usuario";
+            }
+
+            return respuesta;          
         
         }
         #endregion
