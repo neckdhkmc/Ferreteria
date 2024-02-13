@@ -18,7 +18,7 @@ namespace API_Administracion.Controllers
 
         public ResponseGeneral RegistrarProvedor(Datosprovedor datos)
         {
-           
+
 
             //_logger.LogInformation("Metodo RegistroUsuario inicio");
 
@@ -47,8 +47,8 @@ namespace API_Administracion.Controllers
                 respuesta.Mensaje = "Error al registrar Usuario";
             }
 
-            return respuesta;          
-        
+            return respuesta;
+
         }
 
         [HttpPost("ConsultaMarcaProvedor")]
@@ -60,7 +60,7 @@ namespace API_Administracion.Controllers
             {
                 Persistencia objpersistence = new Persistencia();
 
-                 response = objpersistence.consultaMarcasPorProvedor(datos);
+                response = objpersistence.consultaMarcasPorProvedor(datos);
 
                 if (response.Codigo == 0)
                 {
@@ -71,7 +71,7 @@ namespace API_Administracion.Controllers
                 {
                     response.Codigo = 1;
                     response.Mensaje = "no se encontraron registros";
-                
+
                 }
 
             }
@@ -86,7 +86,7 @@ namespace API_Administracion.Controllers
 
         #endregion
 
-        #region marcas
+        #region marcas  
         [HttpPost("RegistrarMarca")]
         public ResponseGeneral RegistrarMarca(DatosMarca datos)
         {
@@ -134,10 +134,77 @@ namespace API_Administracion.Controllers
 
         #region Productos
 
+        [HttpPost("RegistrarProducto")]
+
+        public ResponseGeneral RegistrarProducto(DatosProducto datos)
+        {
+            ResponseGeneral respuesta = new ResponseGeneral();
+
+            try
+            {
+                Persistencia obj = new Persistencia();
+                var responseRgProducto = obj.registrarProducto(datos);
+                if (responseRgProducto)
+                {
+                    respuesta.codigo = 0;
+                    respuesta.Mensaje = "Producto registrado exitosamente";
+
+                }
+                else
+                {
+                    respuesta.codigo = 1;
+                    respuesta.Mensaje = "Producto no registrado exitosamente";
+                }
+
+            }
+            catch (Exception e)
+            {
+
+                respuesta.codigo = 1;
+                respuesta.Mensaje = "Producto no registrado exitosamente";
+            }
+            return respuesta;
+        }
 
         #endregion
 
+        #region Catalogos
 
 
+        [HttpPost("RegistrarCategoria")]
+        public ResponseGeneral RegistrarCategoria(DatosGenericos datos)
+        {
+            ResponseGeneral respuesta = new ResponseGeneral();
+            try
+            {
+                Persistencia objpersistence = new Persistencia();
+
+                var responseCategoria = objpersistence.registrarCategoria(datos);
+                if (responseCategoria)
+                {
+                    respuesta.codigo = 0;
+                    respuesta.Mensaje = "Categoria registrada exitosamente";
+                }
+                else
+                {
+                    respuesta.codigo = 1;
+                    respuesta.Mensaje = "Error al registrar Ctegoria";
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+            return respuesta;
+
+        }
+
+
+
+        #endregion
     }
+
 }
+
