@@ -7,5 +7,6 @@ namespace RegistroUsuario.Clases
 {
     public class prueba
     {
+        string r = "";
     }
 }
