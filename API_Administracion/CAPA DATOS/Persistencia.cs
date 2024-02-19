@@ -1,4 +1,5 @@
 ﻿using API_Administracion.CLASES;
+using API_Administracion.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace API_Administracion.CAPA_DATOS
 {
-    public class Persistencia
+    public class Persistencia : Ipersistencia
     {
         IConfiguration configuration = new ConfigurationBuilder().SetBasePath(AppDomain.CurrentDomain.BaseDirectory).AddJsonFile("appsettings.json").Build();
         public bool regitroProvedor(Datosprovedor datos)

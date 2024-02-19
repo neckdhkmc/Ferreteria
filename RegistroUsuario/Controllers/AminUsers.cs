@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RegistroUsuario.Clases;
 using RegistroUsuario.Persistencia;
+using RegistroUsuario.Interfaces;
 
 namespace RegistroUsuario.Controllers
 {
@@ -16,9 +17,11 @@ namespace RegistroUsuario.Controllers
     public class AminUsers : ControllerBase
     {
         private readonly ILoggerManager _logger;
-        public AminUsers(ILoggerManager logger)
+        private  Ipersistencia _ipersistencia;
+        public AminUsers(ILoggerManager logger, Ipersistencia ipersistencia)
         {
             _logger = logger;
+            _ipersistencia = ipersistencia;
         }
 
         //endopints 
@@ -96,9 +99,9 @@ namespace RegistroUsuario.Controllers
             ResponseUser respuesta = new ResponseUser();
             try
             {
-                Persistence objpersistence = new Persistence(_logger);
+                
 
-                var responseRegUsur = objpersistence.regitroUsuario(datos);
+                var responseRegUsur = _ipersistencia.regitroUsuario(datos);
                 if (responseRegUsur)
                 {
                     respuesta.Codigo = 0;
@@ -133,8 +136,8 @@ namespace RegistroUsuario.Controllers
             InfoUser respuesta = new InfoUser();
             try
             {
-                Persistence objpersistence = new Persistence(_logger);
-                var responseRegUsur = objpersistence.datosUsuarios(datos.IdUsuario);
+                
+                var responseRegUsur = _ipersistencia.datosUsuarios(datos.IdUsuario);
                 respuesta = responseRegUsur;
 
             }
@@ -154,8 +157,8 @@ namespace RegistroUsuario.Controllers
 
             try
             {
-                Persistence objpersistence = new Persistence(_logger);
-                var responseRegUsur = objpersistence.actualizarUsuario(datos);
+                
+                var responseRegUsur = _ipersistencia.actualizarUsuario(datos);
 
                 if (responseRegUsur)
                 {
@@ -185,8 +188,8 @@ namespace RegistroUsuario.Controllers
             ResponseUser respuesta = new ResponseUser();
             try
             {
-                Persistence objpersistence = new Persistence(_logger);
-                var responseRegUsur = objpersistence.eliminarUsuario(datos.IdUsuario);
+                
+                var responseRegUsur = _ipersistencia.eliminarUsuario(datos.IdUsuario);
 
                 if (responseRegUsur)
                 {
@@ -216,9 +219,9 @@ namespace RegistroUsuario.Controllers
 
             try
             {
-                Persistence objpersistence = new Persistence(_logger);
+                
 
-                var responseRegUsur = objpersistence.registroStatus(datos);
+                var responseRegUsur = _ipersistencia.registroStatus(datos);
                 if (responseRegUsur)
                 {
                     respuesta.Codigo = 0;

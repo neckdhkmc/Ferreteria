@@ -1,5 +1,6 @@
 ﻿using API_Administracion.CAPA_DATOS;
 using API_Administracion.CLASES;
+using API_Administracion.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,21 +14,29 @@ namespace API_Administracion.Controllers
     public class Administracion : ControllerBase
     {
 
+        #region constructor de la clase
+        private readonly Ipersistencia _ipersistencia;
+        public Administracion(Ipersistencia ipersistencia)
+        {
+            _ipersistencia = ipersistencia;
+
+        }
+        #endregion
+
         #region provedores
         [HttpPost("RegistrarProvedor")]
 
         public ResponseGeneral RegistrarProvedor(Datosprovedor datos)
         {
 
-
             //_logger.LogInformation("Metodo RegistroUsuario inicio");
 
             ResponseGeneral respuesta = new ResponseGeneral();
             try
             {
-                Persistencia objpersistence = new Persistencia();
+                
 
-                var responseRegUsur = objpersistence.regitroProvedor(datos);
+                var responseRegUsur = _ipersistencia.regitroProvedor(datos);
                 if (responseRegUsur)
                 {
                     respuesta.codigo = 0;
@@ -58,9 +67,9 @@ namespace API_Administracion.Controllers
             ResponseMarcaProvedores response = new ResponseMarcaProvedores();
             try
             {
-                Persistencia objpersistence = new Persistencia();
+                
 
-                response = objpersistence.consultaMarcasPorProvedor(datos);
+                response = _ipersistencia.consultaMarcasPorProvedor(datos);
 
                 if (response.Codigo == 0)
                 {
@@ -97,9 +106,9 @@ namespace API_Administracion.Controllers
             ResponseGeneral respuesta = new ResponseGeneral();
             try
             {
-                Persistencia objpersistence = new Persistencia();
+               
 
-                var responseRegMarca = objpersistence.regitroMarca(datos);
+                var responseRegMarca = _ipersistencia.regitroMarca(datos);
                 if (responseRegMarca)
                 {
                     respuesta.codigo = 0;
@@ -142,8 +151,8 @@ namespace API_Administracion.Controllers
 
             try
             {
-                Persistencia obj = new Persistencia();
-                var responseRgProducto = obj.registrarProducto(datos);
+                
+                var responseRgProducto = _ipersistencia.registrarProducto(datos);
                 if (responseRgProducto)
                 {
                     respuesta.codigo = 0;
@@ -177,9 +186,9 @@ namespace API_Administracion.Controllers
             ResponseGeneral respuesta = new ResponseGeneral();
             try
             {
-                Persistencia objpersistence = new Persistencia();
+              
 
-                var responseCategoria = objpersistence.registrarCategoria(datos);
+                var responseCategoria = _ipersistencia.registrarCategoria(datos);
                 if (responseCategoria)
                 {
                     respuesta.codigo = 0;

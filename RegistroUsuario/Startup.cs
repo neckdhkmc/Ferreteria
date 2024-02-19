@@ -7,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using RegistroUsuario.Controllers;
+using RegistroUsuario.Interfaces;
+using RegistroUsuario.Persistencia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +26,7 @@ namespace RegistroUsuario
 
         public IConfiguration Configuration { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -32,7 +36,7 @@ namespace RegistroUsuario
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RegistroUsuario", Version = "v1" });
             });
-
+            services.AddTransient<Ipersistencia, Persistence>();
             services.AddControllersWithViews();
             services.AddSingleton<ILoggerManager, LoggerManager>();
         }

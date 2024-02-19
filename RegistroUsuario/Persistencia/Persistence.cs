@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using RegistroUsuario.Clases;
+using RegistroUsuario.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RegistroUsuario.Persistencia
 {
-    public class Persistence
+    public class Persistence: Ipersistencia
     {
         private readonly ILoggerManager _logger;
 
@@ -17,6 +18,7 @@ namespace RegistroUsuario.Persistencia
         public Persistence(ILoggerManager logger)
         {
             _logger = logger;
+           
         }
         public bool conexionBD()
         {

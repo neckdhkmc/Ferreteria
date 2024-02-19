@@ -1,3 +1,5 @@
+using API_Administracion.CAPA_DATOS;
+using API_Administracion.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +33,7 @@ namespace API_Administracion
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Administracion", Version = "v1" });
             });
+            services.AddTransient<Ipersistencia, Persistencia>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
