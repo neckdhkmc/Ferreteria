@@ -7,5 +7,10 @@ namespace RegistroUsuario.Clases
 {
     public class prueba
     {
+
+        public void RegistrousuariosPRUEB()
+        { 
+        
+        }
     }
 }
