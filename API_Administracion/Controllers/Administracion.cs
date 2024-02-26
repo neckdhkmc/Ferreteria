@@ -1,135 +1,74 @@
 ﻿using API_Administracion.CAPA_DATOS;
 using API_Administracion.CLASES;
 using API_Administracion.Interfaces;
+using API_Administracion.Modelos;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace API_Administracion.Controllers
 {
+   
     [ApiController]
     [Route("[controller]")]
     public class Administracion : ControllerBase
     {
 
+        private readonly IRepository<Marca> _MarcaRepository;
         #region constructor de la clase
-        private readonly Ipersistencia _ipersistencia;
-        public Administracion(Ipersistencia ipersistencia)
-        {
-            _ipersistencia = ipersistencia;
 
+        public Administracion(IRepository<ProvedoresController> productRepository, IRepository<Marca> MarcaRepository)
+        {
+            
+            _MarcaRepository = MarcaRepository;
         }
         #endregion
 
-        #region provedores
-        [HttpPost("RegistrarProvedor")]
-
-        public ResponseGeneral RegistrarProvedor(Datosprovedor datos)
-        {
-
-            //_logger.LogInformation("Metodo RegistroUsuario inicio");
-
-            ResponseGeneral respuesta = new ResponseGeneral();
-            try
-            {
-                
-
-                var responseRegUsur = _ipersistencia.regitroProvedor(datos);
-                if (responseRegUsur)
-                {
-                    respuesta.codigo = 0;
-                    respuesta.Mensaje = "Provedor registrado exitosamente";
-                }
-                else
-                {
-                    respuesta.codigo = 1;
-                    respuesta.Mensaje = "Error al registrar provedor";
-                }
-
-            }
-            catch (Exception e)
-            {
-
-                respuesta.codigo = 1;
-                respuesta.Mensaje = "Error al registrar Usuario";
-            }
-
-            return respuesta;
-
-        }
-
-        [HttpPost("ConsultaMarcaProvedor")]
-
-        public ResponseMarcaProvedores ConsultaMarcaPorProbedor(Datosprovedor datos)
-        {
-            ResponseMarcaProvedores response = new ResponseMarcaProvedores();
-            try
-            {
-                
-
-                response = _ipersistencia.consultaMarcasPorProvedor(datos);
-
-                if (response.Codigo == 0)
-                {
-                    return response;
-
-
-                } else
-                {
-                    response.Codigo = 1;
-                    response.Mensaje = "no se encontraron registros";
-
-                }
-
-            }
-            catch (Exception e)
-            {
-
-                throw;
-            }
-
-            return response;
-        }
-
-        #endregion
+     
 
         #region marcas  
         [HttpPost("RegistrarMarca")]
-        public ResponseGeneral RegistrarMarca(DatosMarca datos)
+        public ResponseGeneral RegistrarMarca(Marca datos)
         {
 
-
-            //_logger.LogInformation("Metodo RegistroUsuario inicio");
-
             ResponseGeneral respuesta = new ResponseGeneral();
+           
             try
             {
-               
+                // Suponiendo que Marca contiene los datos de la nueva marca
+                var nombreMarca = new SqlParameter("@NombreMarca", SqlDbType.NVarChar) { Value = datos.NombreMarca };
+                var descripcion = new SqlParameter("@Descripcion", SqlDbType.NVarChar) { Value = datos.Descripcion };
+                var idStatus = new SqlParameter("@idStatus", SqlDbType.Int) { Value = datos.idStatus };
 
-                var responseRegMarca = _ipersistencia.regitroMarca(datos);
-                if (responseRegMarca)
+                //se ejecuta el metodo del repositorio para ejecutar el store
+                var result = _MarcaRepository.ExecuteStoredProcedureNonQuery("sp_RegistrarMarca @NombreMarca, @Descripcion, @idStatus", nombreMarca, descripcion, idStatus);
+
+                if (result.codigo == 0)
                 {
                     respuesta.codigo = 0;
-                    respuesta.Mensaje = "Marca registrada exitosamente";
+                    respuesta.Mensaje = "Marca registrada correctamente.";
+                    return respuesta;
                 }
-                else
-                {
+                else {
                     respuesta.codigo = 1;
-                    respuesta.Mensaje = "Error al registrar Marca";
+                    respuesta.Mensaje = "Marca No registrada correctamente.";
+                    return respuesta;
                 }
-
+                
+                
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
                 respuesta.codigo = 1;
-                respuesta.Mensaje = "Error al registrar Marca";
+                respuesta.Mensaje = "Marca No registrada correctamente.";
+                return respuesta;                
             }
 
-            return respuesta;
-
+            
         }
 
         #endregion
@@ -152,18 +91,18 @@ namespace API_Administracion.Controllers
             try
             {
                 
-                var responseRgProducto = _ipersistencia.registrarProducto(datos);
-                if (responseRgProducto)
-                {
-                    respuesta.codigo = 0;
-                    respuesta.Mensaje = "Producto registrado exitosamente";
+                //var responseRgProducto = _ipersistencia.registrarProducto(datos);
+                //if (responseRgProducto)
+                //{
+                //    respuesta.codigo = 0;
+                //    respuesta.Mensaje = "Producto registrado exitosamente";
 
-                }
-                else
-                {
-                    respuesta.codigo = 1;
-                    respuesta.Mensaje = "Producto no registrado exitosamente";
-                }
+                //}
+                //else
+                //{
+                //    respuesta.codigo = 1;
+                //    respuesta.Mensaje = "Producto no registrado exitosamente";
+                //}
 
             }
             catch (Exception e)
@@ -188,17 +127,17 @@ namespace API_Administracion.Controllers
             {
               
 
-                var responseCategoria = _ipersistencia.registrarCategoria(datos);
-                if (responseCategoria)
-                {
-                    respuesta.codigo = 0;
-                    respuesta.Mensaje = "Categoria registrada exitosamente";
-                }
-                else
-                {
-                    respuesta.codigo = 1;
-                    respuesta.Mensaje = "Error al registrar Ctegoria";
-                }
+                //var responseCategoria = _ipersistencia.registrarCategoria(datos);
+                //if (responseCategoria)
+                //{
+                //    respuesta.codigo = 0;
+                //    respuesta.Mensaje = "Categoria registrada exitosamente";
+                //}
+                //else
+                //{
+                //    respuesta.codigo = 1;
+                //    respuesta.Mensaje = "Error al registrar Ctegoria";
+                //}
             }
             catch (Exception e)
             {

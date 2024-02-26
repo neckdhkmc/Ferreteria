@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace API_Administracion.Modelos
+{
+    [Table("Marca")]
+    public class Marca
+    {
+        public int Id { get; set; }
+        public string NombreMarca { get; set; }
+        public string Descripcion { get; set; }
+        public int idStatus { get; set; }
+    }
+}
