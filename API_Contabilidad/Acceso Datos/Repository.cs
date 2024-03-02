@@ -1,14 +1,15 @@
-﻿using API_Administracion.CLASES;
-using API_Administracion.Interfaces;
-using API_Administracion.Modelos;
+﻿using API_Contabilidad.Clases;
+using API_Contabilidad.Interfaces;
+using API_Contabilidad.Modelos;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API_Administracion.CAPA_DATOS
+namespace API_Contabilidad.Acceso_Datos
 {
     public class Repository<T> : IRepository<T> where T : class
     {
@@ -105,13 +106,60 @@ namespace API_Administracion.CAPA_DATOS
             }
             catch (Exception e)
             {
-                
+
                 // Maneja cualquier excepción y establece el código de retorno en 1 y el mensaje en el mensaje de error
                 respuesta.codigo = 1;
                 respuesta.Mensaje = e.Message;
             }
 
             return respuesta;
+        }
+
+
+        //metodo para ejecutar store y obtener lista de datos
+
+        public (List<T> dataList, int codigoRetorno, string mensaje) ExecuteListData(string storedProcedureName, params SqlParameter[] parameters)
+        {
+            var dataList = new List<T>();
+            var codigoRetorno = 0;
+            var mensaje = "";
+
+            try
+            {
+                // Añade un parámetro de salida para capturar el valor de retorno del procedimiento almacenado
+                var returnMensaje = new SqlParameter("@Mensaje", SqlDbType.NVarChar, 100)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                var returnCodigoRetorno = new SqlParameter("@CodigoRetorno", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                // Agrega los parámetros de salida a la lista de parámetros
+                var parametersList = new List<SqlParameter>(parameters);
+                parametersList.Add(returnMensaje);
+                parametersList.Add(returnCodigoRetorno);
+
+                // Convierte la lista de parámetros de nuevo a un array
+                parameters = parametersList.ToArray();
+
+                // Ejecuta el procedimiento almacenado
+                dataList = _context.Database.SqlQuery<T>(storedProcedureName, parameters).ToList();
+
+                // Obtiene el valor de retorno del procedimiento almacenado
+                codigoRetorno = (int)returnCodigoRetorno.Value;
+                mensaje = (string)returnMensaje.Value;
+            }
+            catch (Exception e)
+            {
+                // Maneja cualquier excepción y registra el error
+                Console.WriteLine($"Error al ejecutar el procedimiento almacenado: {e.Message}");
+                codigoRetorno = 1;
+                mensaje = e.Message;
+            }
+
+            return (dataList, codigoRetorno, mensaje);
         }
 
         //metodo para consumir cualquier vista  de sql 
@@ -123,6 +171,38 @@ namespace API_Administracion.CAPA_DATOS
             return rf;
         }
 
+        public decimal GetLastInsertedId(string tableName)
+        {
+            // Consultar el último ID registrado en la tabla especificada
+            var lastInsertedId = _context.Database.SqlQuery<decimal>($"SELECT IDENT_CURRENT('{tableName}')").SingleOrDefault();
 
+            return lastInsertedId;
+        }
+
+        //manejo de transacciones
+        public DbContextTransaction BeginTransaction()
+        {
+             return _context.Database.BeginTransaction();
+        }
+
+        //obtener el precio unitario 
+
+        public decimal GetPrecioUnitarioProducto(int idProducto)
+        {
+
+            try
+            {
+                var producto = _context.Productos.FirstOrDefault(p => p.ID == idProducto);
+                return producto != null ? Convert.ToDecimal(producto.PrecioUnitario) : 0m;
+            }
+            catch (Exception e)
+            {
+                var rf = e.InnerException.Message;
+                throw;
+            }
+           
+        }
+
+      
     }
 }

@@ -22,6 +22,9 @@ namespace API_Administracion.CAPA_DATOS
         public DbSet<Provedores> Provedores { get; set; }
         public DbSet<Marca> Marca { get; set; }
         public DbSet<ProvedorMarca> ProvedorMarca { get; set; }
+        public DbSet<Categorias> Categorias { get; set; }
+
+        public DbSet<Productos> Productos { get; set; }
 
         //se obtiene la cadena de conexion
         private static string GetConnectionString()

@@ -1,7 +1,3 @@
-using API_Administracion.CAPA_DATOS;
-using API_Administracion.CAPA_LOGICA;
-using API_Administracion.CLASES;
-using API_Administracion.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +8,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-namespace API_Administracion
+
+namespace WebApplication2
 {
     public class Startup
     {
@@ -25,27 +21,16 @@ namespace API_Administracion
         }
 
         public IConfiguration Configuration { get; }
-      
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Administracion", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApplication2", Version = "v1" });
             });
-            //services.AddTransient<Ipersistencia, Persistencia>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
-            // Configurar Entity Framework 6.x DbContext
-            services.AddScoped<MyDbContext>();
-            services.AddScoped<MarcaServices>();
-            services.AddScoped<ProvedorService>();
-            services.AddScoped<CategoriasServices>();
-            services.AddScoped<ProductosServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,7 +40,7 @@ namespace API_Administracion
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API_Administracion v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApplication2 v1"));
             }
 
             app.UseRouting();
